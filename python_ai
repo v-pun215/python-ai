@@ -1,0 +1,208 @@
+import pyttsx3
+import turtle
+import speech_recognition as sr
+import wolframalpha
+
+engine = pyttsx3.init('sapi5')
+
+client = wolframalpha.Client('JPXYXL-7KVAGWTRW9')
+
+
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[len(voices)-1].id)
+
+
+def speak(audio):
+    print('Computer: ' + audio)
+    engine.say(audio)
+    engine.runAndWait()
+
+speak('Hello Sir, I am your digital assistant PYVIS the python JARVIS!')
+speak('Please command me: ')
+
+
+def texT():
+   
+    r = sr.Recognizer()                                                                                   
+    with sr.Microphone() as source:                                                                       
+        print("Listening...")
+        r.pause_threshold =  1
+        audio = r.listen(source)
+    try:
+        text = r.recognize_google(audio, language='en-in')
+        print('Person: ' + text + '\n')
+        
+    except sr.UnknownValueError:
+        speak('Sorry sir! I didn\'t get that! Try again!')
+        text = str(input("Command: "))
+
+    return text
+
+if __name__ == '__main__':
+    
+    while True:
+        text = texT();
+        text = text.lower()
+        #1
+
+        if "calculator" in text:
+            cal = int(input("Please enter number 1: "))
+            opr = input("Please enter operration: ")
+            cal2 = int(input("Please enter number 2: "))
+            if opr == "x":
+                bong = cal*cal2
+                speak(bong)
+            if opr == "/":
+                bongi = cal/cal2
+                speak(bongi)
+            if opr == "+":
+                bonge = cal+cal2
+                speak(bonge)
+            if opr == "-":
+                bon = cal-cal2
+                speak(bon)
+        
+
+        elif 'email' in text:
+            import smtplib, ssl
+
+            while True:
+                port = 465  # For SSL
+                smtp_server = "smtp.gmail.com"
+                sender_email = input("what is your email address: ")
+                receiver_email = input("Who do you want to send to: ") 
+                password = input("Type your password and press enter: ")
+                message = input("what's your message: ")
+
+                context = ssl.create_default_context()
+                with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+                    server.login(sender_email, password)
+                    server.sendmail(sender_email, receiver_email, message)
+                    speak("message sent!")
+                    
+
+    
+    
+    
+    
+    
+        elif 'tell the exact time' in text:
+                    import time
+                    from datetime import datetime  
+                    now = datetime.now()
+                    speak(now.strftime("%m/%d/%Y %H:%M:%S"))
+                    time.sleep(1)
+
+    
+
+        elif "digital clock" in text:
+            import time #100! lines of code!
+            from datetime import datetime
+            while True:   
+                now = datetime.now()
+                print(now.strftime("%m/%d/%Y %H:%M:%S"), end="", flush=True),
+                print("\r", end=" \n ", flush=True),
+                time.sleep(1)
+
+    #3
+        elif 'search web' in text: 
+                        from googlesearch import search
+                        import webbrowser
+                        # to search
+                        with sr.Microphone() as source:
+                            print("Listening..... ")
+                            audio = r.listen(source)
+                            q = r.recognize_google(audio)
+                        for j in search(q, tld="co.in", num=10, stop=1, pause=2):
+                            print(j)
+
+
+
+        elif 'stop' in text:
+            import sys
+            speak("Ok")
+            speak("Bye!")
+            sys.exit()
+
+        elif "change my name" in text:
+            speak("Ok")
+            speak("What should I call you now")
+            with sr.Microphone() as source:
+                print("Listening..... ")
+                audio = r.listen(source)
+                txt = r.recognize_google(audio)
+                name = txt
+                speak("Ok, I will call you {}".format(name))
+
+
+    
+
+        elif "tell the news in India" in text:
+            import webbrowser
+            speak("Got it")
+            speak("Redirecting....")
+            speak("Here is your news")
+            chrome_path1 = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
+            speak("Enjoy!")
+            webbrowser.get(chrome_path1).open("www.indiatimes.com")
+
+        elif "tell the news in New York" in text:
+            import webbrowser
+            speak("Got it")
+            speak("Redirecting.....")
+            speak("Here is your news")
+            chrome_path2 = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
+            speak("Enjoy!")
+            webbrowser.get(chrome_path2).open("www.nytimes.com")
+
+    
+        elif "Chrome" in text: 
+            import webbrowser
+            chrome_path = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
+            with sr.Microphone() as source:
+                print("Listening..... ")
+                audio = r.listen(source)
+                t = r.recognize_google(audio)
+                print("Person: {}".format(text)) 
+
+            speak("Got it.")
+            speak("Opening.....")
+            webbrowser.get(chrome_path).open(t)
+    
+        
+        
+
+        elif "play music" in text:
+            import os
+            speak("Got it")
+            speak("Opening...")
+            speak("Enjoy!")
+            os.system("start music.mp3")
+
+        elif "timer" in text:
+            import os
+            import time
+            speak("Ok")
+            f = int(input("Please enter the sec/min/hours: "))
+            time.sleep(f)
+            os.system("start music.mp3")
+
+
+        else:
+            text = text
+            speak('Searching...')
+            try:
+                res = client.query(text)
+                results = next(res.results).text
+                speak('WOLFRAM-ALPHA says - ')
+                speak('Got it.')
+                speak(results)
+                    
+     
+            except:
+                webbrowser.open('www.google.com')
+        
+        speak('Next Command! Sir!')
+
+
+        
